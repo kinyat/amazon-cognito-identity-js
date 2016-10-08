@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { LocalStorage } from 'node-localstorage';
+
 import CognitoIdentityServiceProvider from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
 import CognitoUser from './CognitoUser';
@@ -43,6 +45,7 @@ export default class CognitoUserPool {
     this.paranoia = Paranoia || 0;
 
     this.client = new CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region });
+    this.localStorage = new LocalStorage('./.scratch');
   }
 
   /**
@@ -123,7 +126,7 @@ export default class CognitoUserPool {
    */
   getCurrentUser() {
     const lastUserKey = `CognitoIdentityServiceProvider.${this.clientId}.LastAuthUser`;
-    const storage = window.localStorage;
+    const storage = localStorage;
 
     const lastAuthUser = storage.getItem(lastUserKey);
     if (lastAuthUser) {

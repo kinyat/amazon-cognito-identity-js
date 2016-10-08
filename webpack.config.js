@@ -27,6 +27,7 @@ module.exports = {
     library: 'AmazonCognitoIdentity'
   },
   devtool: 'source-map',
+  target: 'node',
   externals: {
     // This umd context config isn't in configuration documentation, but see example:
     // https://github.com/webpack/webpack/tree/master/examples/externals

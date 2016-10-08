@@ -17,6 +17,7 @@
 
 import * as sjcl from 'sjcl';
 import { BigInteger } from 'jsbn';
+import { LocalStorage } from 'node-localstorage';
 
 import AuthenticationHelper from './AuthenticationHelper';
 import CognitoAccessToken from './CognitoAccessToken';
@@ -87,6 +88,7 @@ export default class CognitoUser {
 
     this.signInUserSession = null;
     this.authenticationFlowType = 'USER_SRP_AUTH';
+    this.localStorage = new LocalStorage('./.scratch');
   }
 
   /**
@@ -789,7 +791,7 @@ export default class CognitoUser {
     const accessTokenKey = `${keyPrefix}.accessToken`;
     const refreshTokenKey = `${keyPrefix}.refreshToken`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     if (storage.getItem(idTokenKey)) {
       const idToken = new CognitoIdToken({
@@ -834,7 +836,7 @@ export default class CognitoUser {
     authParameters.REFRESH_TOKEN = refreshToken.getToken();
     const keyPrefix = `CognitoIdentityServiceProvider.${this.pool.getClientId()}`;
     const lastUserKey = `${keyPrefix}.LastAuthUser`;
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     if (storage.getItem(lastUserKey)) {
       this.username = storage.getItem(lastUserKey);
@@ -875,7 +877,7 @@ export default class CognitoUser {
     const refreshTokenKey = `${keyPrefix}.${this.username}.refreshToken`;
     const lastUserKey = `${keyPrefix}.LastAuthUser`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     storage.setItem(idTokenKey, this.signInUserSession.getIdToken().getJwtToken());
     storage.setItem(accessTokenKey, this.signInUserSession.getAccessToken().getJwtToken());
@@ -893,7 +895,7 @@ export default class CognitoUser {
     const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
     const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     storage.setItem(deviceKeyKey, this.deviceKey);
     storage.setItem(randomPasswordKey, this.randomPassword);
@@ -910,7 +912,7 @@ export default class CognitoUser {
     const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
     const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     if (storage.getItem(deviceKeyKey)) {
       this.deviceKey = storage.getItem(deviceKeyKey);
@@ -929,7 +931,7 @@ export default class CognitoUser {
     const randomPasswordKey = `${keyPrefix}.randomPasswordKey`;
     const deviceGroupKeyKey = `${keyPrefix}.deviceGroupKey`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     storage.removeItem(deviceKeyKey);
     storage.removeItem(randomPasswordKey);
@@ -947,7 +949,7 @@ export default class CognitoUser {
     const refreshTokenKey = `${keyPrefix}.${this.username}.refreshToken`;
     const lastUserKey = `${keyPrefix}.LastAuthUser`;
 
-    const storage = window.localStorage;
+    const storage = this.localStorage;
 
     storage.removeItem(idTokenKey);
     storage.removeItem(accessTokenKey);
